@@ -1,0 +1,202 @@
+/* ──────────────────────────────────────────
+   Global
+────────────────────────────────────────── */
+body {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #e0e0e0;
+}
+
+/* ──────────────────────────────────────────
+   Cards
+────────────────────────────────────────── */
+.card {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: #e0e0e0;
+}
+
+.card-title {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* ──────────────────────────────────────────
+   Search bar
+────────────────────────────────────────── */
+.search-input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    border-radius: 12px 0 0 12px !important;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.search-input:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #4fc3f7;
+    color: #ffffff;
+    box-shadow: 0 0 0 0.2rem rgba(79, 195, 247, 0.25);
+    outline: none;
+}
+
+.btn-search {
+    background: linear-gradient(135deg, #4fc3f7, #0288d1);
+    border: none;
+    color: #fff;
+    border-radius: 0 12px 12px 0 !important;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: opacity 0.2s;
+}
+
+.btn-search:hover {
+    opacity: 0.85;
+    color: #fff;
+}
+
+/* ──────────────────────────────────────────
+   Weather result card
+────────────────────────────────────────── */
+.weather-icon {
+    width: 80px;
+    height: 80px;
+    filter: drop-shadow(0 0 8px rgba(79, 195, 247, 0.6));
+}
+
+.temp-display {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1;
+}
+
+.weather-detail {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    color: #b0bec5;
+}
+
+.weather-detail span {
+    display: block;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #e0e0e0;
+}
+
+/* ──────────────────────────────────────────
+   Favourite star button
+────────────────────────────────────────── */
+.btn-favorite {
+    background: none;
+    border: none;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.2rem 0.4rem;
+    transition: transform 0.15s;
+    color: #ffd54f;
+}
+
+.btn-favorite:hover {
+    transform: scale(1.25);
+}
+
+/* ──────────────────────────────────────────
+   Recent / Favourites chips
+────────────────────────────────────────── */
+.city-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    color: #e0e0e0;
+    user-select: none;
+}
+
+.chip:hover {
+    background: rgba(79, 195, 247, 0.2);
+    border-color: #4fc3f7;
+    color: #ffffff;
+}
+
+.chip-remove {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.8rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 0 0 0.15rem;
+    transition: color 0.15s;
+}
+
+.chip-remove:hover {
+    color: #ef5350;
+}
+
+.section-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+    margin-bottom: 0.4rem;
+}
+
+/* ──────────────────────────────────────────
+   Error alert
+────────────────────────────────────────── */
+.alert-weather {
+    background: rgba(239, 83, 80, 0.15);
+    border: 1px solid rgba(239, 83, 80, 0.4);
+    border-radius: 12px;
+    color: #ef9a9a;
+}
+
+/* ──────────────────────────────────────────
+   Misc
+────────────────────────────────────────── */
+.main-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #4fc3f7;
+    letter-spacing: -0.5px;
+}
+
+.subtitle {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.95rem;
+}
+
+@media (max-width: 576px) {
+    .temp-display {
+        font-size: 2.8rem;
+    }
+    .main-title {
+        font-size: 1.6rem;
+    }
+}
