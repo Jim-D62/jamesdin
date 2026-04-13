@@ -1,4 +1,6 @@
+import logging
 import os
+
 import requests
 from flask import Flask, render_template, request, jsonify
 
@@ -6,6 +8,12 @@ app = Flask(__name__)
 
 OPENWEATHER_API_KEY = os.environ.get("OPENWEATHER_API_KEY", "")
 OPENWEATHER_BASE_URL = "https://api.openweathermap.org/data/2.5/weather"
+
+if not OPENWEATHER_API_KEY:
+    logging.warning(
+        "OPENWEATHER_API_KEY is not set. Weather requests will fail until "
+        "the environment variable is configured."
+    )
 
 
 def fetch_weather(city: str) -> dict:
@@ -15,7 +23,16 @@ def fetch_weather(city: str) -> dict:
         "appid": OPENWEATHER_API_KEY,
         "units": "metric",
     }
-    response = requests.get(OPENWEATHER_BASE_URL, params=params, timeout=10)
+    try:
+        response = requests.get(OPENWEATHER_BASE_URL, params=params, timeout=10)
+    except requests.exceptions.Timeout:
+        return {"error": "The weather service timed out. Please try again later."}
+    except requests.exceptions.ConnectionError:
+        return {"error": "Could not connect to the weather service. Please check your internet connection."}
+    except requests.exceptions.RequestException as exc:
+        logging.error("Unexpected error fetching weather for %s: %s", city, exc)
+        return {"error": "An unexpected network error occurred. Please try again later."}
+
     if response.status_code == 200:
         data = response.json()
         return {
@@ -64,4 +81,5 @@ def api_weather():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    debug = os.environ.get("FLASK_DEBUG", "0") == "1"
+    app.run(debug=debug)
