@@ -1,0 +1,165 @@
+body {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* ── Search card ── */
+.search-card {
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    color: #fff;
+}
+
+.search-card .card-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+/* ── Search input ── */
+#city-input {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 12px 0 0 12px;
+    color: #fff;
+    padding: 0.65rem 1rem;
+}
+
+#city-input::placeholder { color: rgba(255, 255, 255, 0.5); }
+#city-input:focus {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: #4fc3f7;
+    box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.25);
+    color: #fff;
+    outline: none;
+}
+
+.btn-search {
+    background: #4fc3f7;
+    border: none;
+    border-radius: 0 12px 12px 0;
+    color: #0f3460;
+    font-weight: 600;
+    padding: 0.65rem 1.4rem;
+    transition: background 0.2s;
+}
+.btn-search:hover { background: #81d4fa; color: #0f3460; }
+
+/* ── Weather result card ── */
+.weather-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    color: #fff;
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    animation: fadeIn 0.4s ease;
+}
+
+.weather-icon { width: 80px; height: 80px; }
+
+.temp-display {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.weather-desc {
+    font-size: 1.1rem;
+    opacity: 0.85;
+    text-transform: capitalize;
+}
+
+.weather-meta span {
+    display: inline-block;
+    margin: 0.25rem 0.75rem 0.25rem 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* ── Recent searches & Favourites ── */
+.sidebar-section {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    color: #fff;
+    padding: 1.2rem 1rem;
+    margin-top: 1rem;
+}
+
+.sidebar-section h6 {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-bottom: 0.8rem;
+}
+
+.city-btn {
+    background: none;
+    border: none;
+    color: #e0f7fa;
+    cursor: pointer;
+    font-size: 0.95rem;
+    padding: 0.35rem 0.5rem;
+    text-align: left;
+    width: calc(100% - 2.2rem);
+    border-radius: 8px;
+    transition: background 0.15s;
+}
+.city-btn:hover { background: rgba(255, 255, 255, 0.1); }
+
+.fav-toggle {
+    background: none;
+    border: none;
+    color: #ffd54f;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    padding: 0.35rem 0.4rem;
+    border-radius: 8px;
+    transition: transform 0.15s, background 0.15s;
+}
+.fav-toggle:hover { background: rgba(255, 213, 79, 0.15); transform: scale(1.2); }
+
+.city-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 8px;
+    padding: 0.1rem 0;
+}
+.city-row + .city-row { border-top: 1px solid rgba(255, 255, 255, 0.06); }
+
+.empty-msg {
+    font-size: 0.82rem;
+    opacity: 0.45;
+    padding: 0.3rem 0.5rem;
+}
+
+/* ── Error alert ── */
+.alert-weather {
+    background: rgba(239, 83, 80, 0.2);
+    border: 1px solid rgba(239, 83, 80, 0.4);
+    border-radius: 12px;
+    color: #ffcdd2;
+    margin-top: 1rem;
+}
+
+/* ── Animations ── */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Responsive tweaks ── */
+@media (max-width: 575px) {
+    .search-card { padding: 1.2rem !important; }
+    .temp-display { font-size: 2.2rem; }
+}

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather App</title>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body class="d-flex align-items-start justify-content-center py-5 px-3">
+
+  <div class="w-100" style="max-width: 560px;">
+
+    <!-- ── Search card ── -->
+    <div class="search-card p-4">
+      <h1 class="card-title text-center mb-4">🌤 Weather Search</h1>
+
+      <form id="search-form" action="/weather" method="POST">
+        <div class="input-group">
+          <input
+            id="city-input"
+            type="text"
+            name="city"
+            class="form-control"
+            placeholder="Enter city name…"
+            autocomplete="off"
+            required
+            value="{{ request.form.get('city', '') }}"
+          />
+          <button type="submit" class="btn-search">Search</button>
+        </div>
+      </form>
+
+      <!-- Error alert -->
+      {% if error %}
+      <div class="alert-weather p-3 mt-3">
+        ⚠️ {{ error }}
+      </div>
+      {% endif %}
+
+      <!-- Weather result -->
+      {% if weather %}
+      <div class="weather-card">
+        <div class="d-flex align-items-center gap-3">
+          <img
+            class="weather-icon"
+            src="https://openweathermap.org/img/wn/{{ weather.icon }}@2x.png"
+            alt="{{ weather.description }}"
+          />
+          <div>
+            <div class="fw-bold fs-5">{{ weather.city }}, {{ weather.country }}</div>
+            <div class="temp-display">{{ weather.temperature }}°C</div>
+            <div class="weather-desc">{{ weather.description }}</div>
+          </div>
+        </div>
+        <div class="weather-meta mt-3">
+          <span>💧 Humidity: {{ weather.humidity }}%</span>
+          <span>💨 Wind: {{ weather.wind_speed }} m/s</span>
+          <span>🌡 Feels like: {{ weather.feels_like }}°C</span>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- ── Recent searches ── -->
+    <div class="sidebar-section" id="recent-section">
+      <h6>🕐 Recent Searches</h6>
+      <div id="recent-list">
+        <p class="empty-msg">No recent searches yet.</p>
+      </div>
+    </div>
+
+    <!-- ── Favourite cities ── -->
+    <div class="sidebar-section" id="fav-section">
+      <h6>⭐ Favourite Cities</h6>
+      <div id="fav-list">
+        <p class="empty-msg">No favourites saved yet.</p>
+      </div>
+    </div>
+
+  </div><!-- /container -->
+
+  <script>
+    // ── Storage keys ──────────────────────────────────────────────
+    const RECENT_KEY = 'wx_recent';
+    const FAV_KEY    = 'wx_favs';
+    const MAX_RECENT = 5;
+
+    // ── Helpers ───────────────────────────────────────────────────
+    function getRecent() {
+      try { return JSON.parse(localStorage.getItem(RECENT_KEY)) || []; }
+      catch { return []; }
+    }
+
+    function getFavs() {
+      try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []; }
+      catch { return []; }
+    }
+
+    function saveRecent(list) {
+      localStorage.setItem(RECENT_KEY, JSON.stringify(list));
+    }
+
+    function saveFavs(list) {
+      localStorage.setItem(FAV_KEY, JSON.stringify(list));
+    }
+
+    /** Add city to recent list (deduplicate, cap at MAX_RECENT). */
+    function addToRecent(city) {
+      if (!city) return;
+      const cityLower = city.toLowerCase();
+      let list = getRecent().filter(c => c.toLowerCase() !== cityLower);
+      list.unshift(city);
+      if (list.length > MAX_RECENT) list = list.slice(0, MAX_RECENT);
+      saveRecent(list);
+    }
+
+    /** Toggle a city in favourites; returns true if now a favourite. */
+    function toggleFav(city) {
+      const cityLower = city.toLowerCase();
+      let favs = getFavs();
+      const idx = favs.findIndex(c => c.toLowerCase() === cityLower);
+      if (idx === -1) {
+        favs.unshift(city);
+      } else {
+        favs.splice(idx, 1);
+      }
+      saveFavs(favs);
+      return idx === -1;
+    }
+
+    /** Submit the search form with the given city name. */
+    function searchCity(city) {
+      const input = document.getElementById('city-input');
+      input.value = city;
+      document.getElementById('search-form').submit();
+    }
+
+    // ── Render helpers ────────────────────────────────────────────
+    function renderCityRow(city, isFav, container) {
+      const row = document.createElement('div');
+      row.className = 'city-row';
+      row.dataset.city = city;
+
+      const btn = document.createElement('button');
+      btn.className = 'city-btn';
+      btn.textContent = city;
+      btn.setAttribute('aria-label', `Search weather for ${city}`);
+      btn.addEventListener('click', () => searchCity(city));
+
+      const star = document.createElement('button');
+      star.className = 'fav-toggle';
+      star.textContent = isFav ? '★' : '☆';
+      star.title = isFav ? 'Remove from favourites' : 'Add to favourites';
+      star.setAttribute('aria-label', isFav ? `Remove ${city} from favourites` : `Add ${city} to favourites`);
+      star.addEventListener('click', () => {
+        toggleFav(city);
+        renderAll();
+      });
+
+      row.appendChild(btn);
+      row.appendChild(star);
+      container.appendChild(row);
+    }
+
+    function renderAll() {
+      const recent = getRecent();
+      const favs   = getFavs();
+      const favSet = new Set(favs.map(c => c.toLowerCase()));
+
+      // Recent
+      const recentList = document.getElementById('recent-list');
+      recentList.innerHTML = '';
+      if (recent.length === 0) {
+        recentList.innerHTML = '<p class="empty-msg">No recent searches yet.</p>';
+      } else {
+        recent.forEach(city => renderCityRow(city, favSet.has(city.toLowerCase()), recentList));
+      }
+
+      // Favourites
+      const favList = document.getElementById('fav-list');
+      favList.innerHTML = '';
+      if (favs.length === 0) {
+        favList.innerHTML = '<p class="empty-msg">No favourites saved yet.</p>';
+      } else {
+        favs.forEach(city => renderCityRow(city, true, favList));
+      }
+    }
+
+    // ── On page load ──────────────────────────────────────────────
+    (function init() {
+      // If the server returned weather data, record the city in recent searches.
+      {# tojson escapes all special chars; safe to emit directly into a JS context #}
+      const searchedCity = {% if searched_city is defined %}{{ searched_city | tojson }}{% else %}null{% endif %};
+      if (searchedCity) {
+        addToRecent(searchedCity);
+      }
+      renderAll();
+    })();
+  </script>
+
+</body>
+</html>
